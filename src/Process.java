@@ -5,24 +5,26 @@ public class Process implements Comparable<Process>{
 
 	private final double RUN_DURATION;
 	private final int START_TIME;
-	private int priority, age, timeRunning, timeWaiting, actualStart;
+	private int priority, age, timeRunning, timeWaiting, actualStart, processNum;
 
 	public Process(int seed){
 		Random r = new Random(seed);
 
 		RUN_DURATION = .1+ 9.9*r.nextDouble();
 		START_TIME = r.nextInt(100);
-
 		priority = r.nextInt(4);
+		
 		age = 0;		
 		timeRunning = 0;
 		timeWaiting = 0;
 		actualStart = -1;
 	}
-	public Process(int priority, int aTime, double rTime){		
+	public Process(int priority, int sTime, double rTime, int pNum){		
 		RUN_DURATION = rTime;
-		START_TIME = aTime;
+		START_TIME = sTime;
 		this.priority = priority;
+		processNum = pNum;
+		
 		age = 0;
 		timeRunning = 0;
 		timeWaiting = 0;
@@ -81,14 +83,17 @@ public class Process implements Comparable<Process>{
 	public int getStartTime() {
 		return START_TIME;
 	}
-	public double getRunTime() {
-		return RUN_DURATION;
+	public double getTotalRunTime() {
+		return RUN_DURATION+timeWaiting;
 	}
 	public int getAge() {
 		return age;
 	}
-	public int getTimeWaiting(){
+	public int getWaitTime(){
 		return timeWaiting;
+	}
+	public int getProcessNumber(){
+		return processNum;
 	}
 	public double getResponseTime(){
 		return actualStart - START_TIME;
