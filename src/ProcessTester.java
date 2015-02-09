@@ -100,6 +100,7 @@ public class ProcessTester {
 		//runs any remaining processes that have started (i.e. response time>=0)
 		while(runQueue.size()>0){
 			if(runQueue.get(0).getResponseTime()>0){
+				processStr+=runQueue.get(0).getProcessNumber()+",";
 				if(runQueue.get(0).run(i));
 				else
 					pHaveRun.add(runQueue.remove(0));
@@ -150,7 +151,7 @@ public class ProcessTester {
 		for(Process p: pHaveRun){
 			turnAround += p.getTotalRunTime();
 			waitTime += p.getWaitTime();
-			responseTime = p.getResponseTime();
+			responseTime += p.getResponseTime();
 		}
 		turnAround /= throughput;
 		waitTime /= throughput;
