@@ -2,36 +2,47 @@ import java.util.Random;
 
 
 public class Process implements Comparable<Process>{
-	
-private final double RUN_TIME;
-private int priority, arrivalTime, age, timeRunning, timeWaiting;
+
+	private final double RUN_DURATION;
+	private final int START_TIME;
+	private int priority, age, timeRunning, timeWaiting, actualStart;
 
 	public Process(int seed){
 		Random r = new Random(seed);
-		
-		RUN_TIME = .1+ 9.9*r.nextDouble();		
+
+		RUN_DURATION = .1+ 9.9*r.nextDouble();
+		START_TIME = r.nextInt(100);
+
 		priority = r.nextInt(4);
-		priority = r.nextInt(100);
 		age = 0;		
 		timeRunning = 0;
 		timeWaiting = 0;
+		actualStart = -1;
 	}
 	public Process(int priority, int aTime, double rTime){		
-		RUN_TIME = rTime;
-		arrivalTime = aTime;
+		RUN_DURATION = rTime;
+		START_TIME = aTime;
 		this.priority = priority;
 		age = 0;
 		timeRunning = 0;
 		timeWaiting = 0;
+		actualStart = -1;
 	}
 	/**
-	 * Runs the process for one time quanta
+	 * Runs the process for one time quanta at the specified time quanta.
 	 * @return Returns false if the process has finished running.
 	 */
-	public boolean run(){
-		age = 0;
-		timeRunning++;
-		if (timeRunning >= RUN_TIME)
+	public boolean run(int timeQuanta){
+		if(timeQuanta>=START_TIME){
+			//records actual start time for response time calculations
+			if(actualStart<0)
+				actualStart = timeQuanta;
+			
+			age = 0;
+			timeRunning++;
+		}
+		
+		if (timeRunning >= RUN_DURATION)
 			return false;
 		else 
 			return true;
@@ -52,29 +63,34 @@ private int priority, arrivalTime, age, timeRunning, timeWaiting;
 		priority++;
 		age = 0;
 	}
-	
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//Getters and Comparable interface method	
+	public double getTimeRemaining(){
+		return RUN_DURATION-timeRunning;
+	}
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//Getters and Comparable interface method	
 	public int compareTo(Process p){
-		if(arrivalTime < p.getArrivalTime())
+		if(START_TIME < p.getStartTime())
 			return -1;
-		else if(arrivalTime==p.getArrivalTime())
+		else if(START_TIME==p.getStartTime())
 			return 0;
 		else return 1;
 	}
 	public int getPriority() {
 		return priority;
 	}
-	public int getArrivalTime() {
-		return arrivalTime;
+	public int getStartTime() {
+		return START_TIME;
 	}
 	public double getRunTime() {
-		return RUN_TIME;
+		return RUN_DURATION;
 	}
 	public int getAge() {
 		return age;
 	}
 	public int getTimeWaiting(){
 		return timeWaiting;
+	}
+	public double getResponseTime(){
+		return actualStart - START_TIME;
 	}
 }
