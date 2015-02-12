@@ -151,7 +151,8 @@ public class ProcessTester {
 		while(runQueue.size()>0){
 			if(runQueue.get(0).getResponseTime()>0){
 				processStr+=runQueue.get(0).getProcessNumber()+",";
-				if(runQueue.get(0).run(i));
+				if(runQueue.get(0).run(i))
+					runQueue.add(runQueue.remove(0));
 				else
 					pHaveRun.add(runQueue.remove(0));
 			}
