@@ -99,7 +99,7 @@ public class ProcessTester {
 		int i = NUM_QUANTA;
 		//runs any remaining processes that have started (i.e. response time>=0)
 		while(runQueue.size()>0){
-			if(runQueue.get(0).getResponseTime()>0){
+			if(runQueue.get(0).getResponseTime()>=0){
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 				if(runQueue.get(0).run(i));
 				else
@@ -149,7 +149,7 @@ public class ProcessTester {
 		int i = NUM_QUANTA;
 		//runs any remaining processes that have started (i.e. response time>=0)
 		while(runQueue.size()>0){
-			if(runQueue.get(0).getResponseTime()>0){
+			if(runQueue.get(0).getResponseTime()>=0){
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 				if(runQueue.get(0).run(i))
 					runQueue.add(runQueue.remove(0));
