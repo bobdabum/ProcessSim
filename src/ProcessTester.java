@@ -57,7 +57,7 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		/*
+		
 		printHeaderToFile("HPF non-preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
 			reset(run);
@@ -65,7 +65,6 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		*/
 	}
 	public static void runFCFSnonpre(){
 		ArrayList<Process> runQueue = new ArrayList<Process>(NUM_PROCESSES);
@@ -297,7 +296,183 @@ public class ProcessTester {
 		}
 	}
 	private static void runHPFnonpre(){
+		ArrayList<Process> priority1 = new ArrayList<Process>();
+		ArrayList<Process> priority2 = new ArrayList<Process>();
+		ArrayList<Process> priority3 = new ArrayList<Process>();
+		ArrayList<Process> priority4 = new ArrayList<Process>();
 
+		//runs for 100 time quanta
+		for(int i =0;i<NUM_QUANTA;i++){
+			//Add any processes from toRun list to the runQueue
+			while(pToRun.size()>0 && pToRun.get(0).getStartTime()<=i)
+			{
+				Process nextProcess = pToRun.remove(0);
+				if (nextProcess.getPriority() == 0)
+					priority1.add(nextProcess);
+				else if (nextProcess.getPriority() == 1)
+					priority2.add(nextProcess);
+				else if (nextProcess.getPriority() == 2)
+					priority3.add(nextProcess);
+				else if (nextProcess.getPriority() == 3)
+					priority4.add(nextProcess);
+				else
+					System.out.println("Error in HPFnonPre priority level");
+			}
+				
+			//move processes  and any additional actions
+			//i.e. preemptive algorithms moving processes around
+
+			//Run queue for one time quanta
+			if(priority1.size()>0 && priority1.get(0).getResponseTime()>=0){
+				//runs first process in queue. removes if process has finished(i.e. method returns false)
+				processStr+=priority1.get(0).getProcessNumber()+",";
+
+				if(priority1.get(0).run(i));
+				else
+					pHaveRun.add(priority1.remove(0));
+
+				//ages rest
+				for(int j=1; j<priority1.size();j++)
+					priority1.get(j).ageProcess();
+			}
+			else if(priority2.size()>0 && priority2.get(0).getResponseTime()>=0){
+				//runs first process in queue. removes if process has finished(i.e. method returns false)
+				processStr+=priority2.get(0).getProcessNumber()+",";
+
+				if(priority2.get(0).run(i));
+				else
+					pHaveRun.add(priority2.remove(0));
+
+				//ages rest
+				for(int j=1; j<priority2.size();j++)
+					priority2.get(j).ageProcess();
+			}
+			else if(priority3.size()>0 && priority3.get(0).getResponseTime()>=0){
+				//runs first process in queue. removes if process has finished(i.e. method returns false)
+				processStr+=priority3.get(0).getProcessNumber()+",";
+
+				if(priority3.get(0).run(i));
+				else
+					pHaveRun.add(priority3.remove(0));
+
+				//ages rest
+				for(int j=1; j<priority3.size();j++)
+					priority3.get(j).ageProcess();
+			}
+			else if(priority4.size()>0 && priority4.get(0).getResponseTime()>=0){
+				//runs first process in queue. removes if process has finished(i.e. method returns false)
+				processStr+=priority4.get(0).getProcessNumber()+",";
+
+				if(priority4.get(0).run(i));
+				else
+					pHaveRun.add(priority4.remove(0));
+
+				//ages rest
+				for(int j=1; j<priority4.size();j++)
+					priority4.get(j).ageProcess();
+			}
+			else if (priority1.size()>0)
+			{
+				//runs first process in queue. removes if process has finished(i.e. method returns false)
+				processStr+=priority1.get(0).getProcessNumber()+",";
+
+				if(priority1.get(0).run(i));
+				else
+					pHaveRun.add(priority1.remove(0));
+
+				//ages rest
+				for(int j=1; j<priority1.size();j++)
+					priority1.get(j).ageProcess();
+			}
+			else if (priority2.size()>0)
+			{
+				//runs first process in queue. removes if process has finished(i.e. method returns false)
+				processStr+=priority2.get(0).getProcessNumber()+",";
+
+				if(priority2.get(0).run(i));
+				else
+					pHaveRun.add(priority2.remove(0));
+
+				//ages rest
+				for(int j=1; j<priority2.size();j++)
+					priority2.get(j).ageProcess();
+			}
+			else if (priority3.size()>0)
+			{
+				//runs first process in queue. removes if process has finished(i.e. method returns false)
+				processStr+=priority3.get(0).getProcessNumber()+",";
+
+				if(priority3.get(0).run(i));
+				else
+					pHaveRun.add(priority3.remove(0));
+
+				//ages rest
+				for(int j=1; j<priority3.size();j++)
+					priority3.get(j).ageProcess();
+			}
+			else if (priority4.size()>0)
+			{
+				//runs first process in queue. removes if process has finished(i.e. method returns false)
+				processStr+=priority4.get(0).getProcessNumber()+",";
+
+				if(priority4.get(0).run(i));
+				else
+					pHaveRun.add(priority4.remove(0));
+
+				//ages rest
+				for(int j=1; j<priority4.size();j++)
+					priority4.get(j).ageProcess();
+			}
+			else
+				processStr+="N,";
+		}
+
+		int i = NUM_QUANTA;
+		//runs any remaining processes that have started (i.e. response time>=0)
+		while(priority1.size()>0){
+			if(priority1.get(0).getResponseTime()>=0){
+				processStr+=priority1.get(0).getProcessNumber()+",";
+				if(priority1.get(0).run(i));
+				else
+					pHaveRun.add(priority1.remove(0));
+			}
+			else
+				priority1.remove(0);
+			i++;
+		}
+		while(priority2.size()>0){
+			if(priority2.get(0).getResponseTime()>=0){
+				processStr+=priority2.get(0).getProcessNumber()+",";
+				if(priority2.get(0).run(i));
+				else
+					pHaveRun.add(priority2.remove(0));
+			}
+			else
+				priority2.remove(0);
+			i++;
+		}
+		while(priority3.size()>0){
+			if(priority3.get(0).getResponseTime()>=0){
+				processStr+=priority3.get(0).getProcessNumber()+",";
+				if(priority3.get(0).run(i));
+				else
+					pHaveRun.add(priority3.remove(0));
+			}
+			else
+				priority3.remove(0);
+			i++;
+		}
+		while(priority4.size()>0){
+			if(priority4.get(0).getResponseTime()>=0){
+				processStr+=priority4.get(0).getProcessNumber()+",";
+				if(priority4.get(0).run(i));
+				else
+					pHaveRun.add(priority4.remove(0));
+			}
+			else
+				priority4.remove(0);
+			i++;
+		}
 	}
 
 	private static void printHeaderToFile(String algorithmType){
