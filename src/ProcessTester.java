@@ -24,7 +24,7 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		
+
 		/*		
 		printHeaderToFile("SJF non-preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
@@ -33,7 +33,7 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		
+
 		printHeaderToFile("SRT non-preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
 			reset(run);
@@ -41,7 +41,7 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		*/
+		 */
 		printHeaderToFile("RR preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
 			reset(run);
@@ -49,7 +49,7 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		
+
 		printHeaderToFile("HPF preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
 			reset(run);
@@ -57,7 +57,7 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		
+
 		printHeaderToFile("HPF non-preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
 			reset(run);
@@ -132,14 +132,14 @@ public class ProcessTester {
 				//runs first process in queue. removes if process has finished(i.e. method returns false)
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 
+				//ages rest
+				for(int j=1; j<runQueue.size();j++)
+					runQueue.get(j).ageProcess();
+				
 				if(runQueue.get(0).run(i))
 					runQueue.add(runQueue.remove(0));
 				else
 					pHaveRun.add(runQueue.remove(0));
-
-				//ages rest
-				for(int j=1; j<runQueue.size();j++)
-					runQueue.get(j).ageProcess();
 			}
 			else
 				processStr+="N,";
@@ -161,139 +161,49 @@ public class ProcessTester {
 		}
 	}
 	private static void runHPFpre(){
-		ArrayList<Process> priority1 = new ArrayList<Process>();
-		ArrayList<Process> priority2 = new ArrayList<Process>();
-		ArrayList<Process> priority3 = new ArrayList<Process>();
-		ArrayList<Process> priority4 = new ArrayList<Process>();
+		ArrayList<ArrayList<Process>> runQueue = new ArrayList<ArrayList<Process>>(4);
+		for(int i=0;i<4;i++)
+			runQueue.add(new ArrayList<Process>(NUM_PROCESSES));
 
 		//runs for 100 time quanta
 		for(int i =0;i<NUM_QUANTA;i++){
 			//Add any processes from toRun list to the runQueue
 			while(pToRun.size()>0 && pToRun.get(0).getStartTime()<=i)
-			{
-				Process nextProcess = pToRun.remove(0);
-				if (nextProcess.getPriority() == 0)
-					priority1.add(nextProcess);
-				else if (nextProcess.getPriority() == 1)
-					priority2.add(nextProcess);
-				else if (nextProcess.getPriority() == 2)
-					priority3.add(nextProcess);
-				else if (nextProcess.getPriority() == 3)
-					priority4.add(nextProcess);
-				else
-					System.out.println("Error in HPFnonPre priority level");
-			}
-				
+				runQueue.get(pToRun.get(0).getPriority()).add(pToRun.get(0));
+
 			//move processes  and any additional actions
 			//i.e. preemptive algorithms moving processes around
 
+			boolean haveRun = false;
 			//Run queue for one time quanta
-			if(priority1.size()>0){
-				//runs first process in queue. removes if process has finished(i.e. method returns false)
-				processStr+=priority1.get(0).getProcessNumber()+",";
-
-				if(priority1.get(0).run(i))
-					priority1.add(priority1.remove(0));
-				else
-					pHaveRun.add(priority1.remove(0));
-
-				//ages rest
-				for(int j=1; j<priority1.size();j++)
-					priority1.get(j).ageProcess();
+			for(ArrayList<Process> a: runQueue)
+			{
+				if(a.size()==0)
+					continue;
+				else if(!haveRun){
+					haveRun = true;
+					//ages rest
+					for(int j=1; j<a.size();j++)
+						a.get(j).ageProcess();
+					
+					processStr+=a.get(0).getProcessNumber()+",";
+					if(a.get(0).run(i))
+						a.add(a.remove(0));
+					else
+						pHaveRun.add(a.remove(0));
+				}
+				else{
+					for(Process p:a)
+						p.ageProcess();					
+				}
 			}
-			else if(priority2.size()>0){
-				//runs first process in queue. removes if process has finished(i.e. method returns false)
-				processStr+=priority2.get(0).getProcessNumber()+",";
-
-				if(priority2.get(0).run(i))
-					priority2.add(priority2.remove(0));
-				else
-					pHaveRun.add(priority2.remove(0));
-
-				//ages rest
-				for(int j=1; j<priority2.size();j++)
-					priority2.get(j).ageProcess();
-			}
-			else if(priority3.size()>0){
-				//runs first process in queue. removes if process has finished(i.e. method returns false)
-				processStr+=priority3.get(0).getProcessNumber()+",";
-
-				if(priority3.get(0).run(i))
-					priority3.add(priority3.remove(0));
-				else
-					pHaveRun.add(priority3.remove(0));
-
-				//ages rest
-				for(int j=1; j<priority3.size();j++)
-					priority3.get(j).ageProcess();
-			}
-			else if(priority4.size()>0){
-				//runs first process in queue. removes if process has finished(i.e. method returns false)
-				processStr+=priority4.get(0).getProcessNumber()+",";
-
-				if(priority4.get(0).run(i))
-					priority4.add(priority4.remove(0));
-				else
-					pHaveRun.add(priority4.remove(0));
-
-				//ages rest
-				for(int j=1; j<priority4.size();j++)
-					priority4.get(j).ageProcess();
-			}
-			else
+			if(!haveRun)
 				processStr+="N,";
 		}
 
 		int i = NUM_QUANTA;
 		//runs any remaining processes that have started (i.e. response time>=0)
-		while(priority1.size()>0){
-			if(priority1.get(0).getResponseTime()>=0){
-				processStr+=priority1.get(0).getProcessNumber()+",";
-				if(priority1.get(0).run(i))
-					priority1.add(priority1.remove(0));
-				else
-					pHaveRun.add(priority1.remove(0));
-			}
-			else
-				priority1.remove(0);
-			i++;
-		}
-		while(priority2.size()>0){
-			if(priority2.get(0).getResponseTime()>=0){
-				processStr+=priority2.get(0).getProcessNumber()+",";
-				if(priority2.get(0).run(i))
-					priority2.add(priority2.remove(0));
-				else
-					pHaveRun.add(priority2.remove(0));
-			}
-			else
-				priority2.remove(0);
-			i++;
-		}
-		while(priority3.size()>0){
-			if(priority3.get(0).getResponseTime()>=0){
-				processStr+=priority3.get(0).getProcessNumber()+",";
-				if(priority3.get(0).run(i))
-					priority3.add(priority3.remove(0));
-				else
-					pHaveRun.add(priority3.remove(0));
-			}
-			else
-				priority3.remove(0);
-			i++;
-		}
-		while(priority4.size()>0){
-			if(priority4.get(0).getResponseTime()>=0){
-				processStr+=priority4.get(0).getProcessNumber()+",";
-				if(priority4.get(0).run(i))
-					priority4.add(priority4.remove(0));
-				else
-					pHaveRun.add(priority4.remove(0));
-			}
-			else
-				priority4.remove(0);
-			i++;
-		}
+		
 	}
 	private static void runHPFnonpre(){
 		ArrayList<Process> priority1 = new ArrayList<Process>();
@@ -318,7 +228,7 @@ public class ProcessTester {
 				else
 					System.out.println("Error in HPFnonPre priority level");
 			}
-				
+
 			//move processes  and any additional actions
 			//i.e. preemptive algorithms moving processes around
 
@@ -480,7 +390,7 @@ public class ProcessTester {
 		avgTurnAround = 0;
 		avgWaitTime = 0;
 		avgThroughput = 0;
-		
+
 		try {
 			FileWriter fw = new FileWriter("statistics.txt", true);
 			fw.write("Algorithm: "+algorithmType+System.getProperty("line.separator"));			
