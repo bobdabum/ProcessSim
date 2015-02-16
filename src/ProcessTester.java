@@ -496,11 +496,13 @@ public class ProcessTester {
 		turnAround /= throughput;
 		waitTime /= throughput;
 		responseTime /= throughput;
+		throughput /= NUM_QUANTA;
 
 		avgResponseTime+=responseTime/NUM_RUNS;
 		avgWaitTime+=waitTime/NUM_RUNS;
 		avgTurnAround+=turnAround/NUM_RUNS;
 		avgThroughput+=throughput/NUM_RUNS;
+
 
 		//write to file
 		try {
@@ -538,6 +540,7 @@ public class ProcessTester {
 				waitTime /= throughput;
 				responseTime /= throughput;
 			}
+			throughput /= NUM_QUANTA;
 			avgResponseTimeHPF[i]+=responseTime/NUM_RUNS;
 			avgWaitTimeHPF[i]+=waitTime/NUM_RUNS;
 			avgTurnAroundHPF[i]+=turnAround/NUM_RUNS;
