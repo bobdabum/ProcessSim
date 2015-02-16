@@ -69,6 +69,19 @@ public class Process implements Comparable<Process>{
 	public double getTimeRemaining(){
 		return RUN_DURATION-timeRunning;
 	}
+        
+        public static final Comparator<Process> compareTimeRemaining = new 
+            Comparator<Process>() {
+                @Override
+                public int compare(Process p1, Process p2){
+                    if(p1.getTimeRemaining() < p2.getTimeRemaining())
+                            return -1;
+                    else if(p1.getTimeRemaining() == p2.getTimeRemaining())
+                            return 0;
+                    else return 1;
+                }
+        };
+        
         public static final Comparator<Process> compareByRunDuration = new 
             Comparator<Process>() {
                 @Override

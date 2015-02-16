@@ -33,7 +33,7 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		/*
+
 		printHeaderToFile("SRT non-preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
 			reset(run);
@@ -41,7 +41,6 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		*/
 
 		printHeaderToFile("RR preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
@@ -142,8 +141,36 @@ public class ProcessTester {
 		}
 	}
 	private static void runSRTnonpre(){
+            ArrayList<Process> runQueue = new ArrayList<Process>(NUM_PROCESSES);
 
+		//runs for 100 time quanta
+		for(int i =0;i<NUM_QUANTA;i++){
+			//Add any processes from toRun list to the runQueue
+			while(pToRun.size()>0 && pToRun.get(0).getStartTime()<=i)
+				runQueue.add(pToRun.remove(0));
+
+			//move processes  and any additional actions
+                        Collections.sort(runQueue.subList(0, runQueue.size()), Process.compareTimeRemaining);
+
+			//i.e. preemptive algorithms moving processes around
+
+			//Run queue for one time quanta
+			if(runQueue.size()>0){
+                                //System.out.println(runQueue.get(0).getProcessNumber() + " + " + runQueue.get(0).getRunDuration());
+				//runs first process in queue. removes if process has finished(i.e. method returns false)
+				processStr+=runQueue.get(0).getProcessNumber()+",";
+
+				pHaveRun.add(runQueue.remove(0));
+
+				//ages rest
+				for(int j=1; j<runQueue.size();j++)
+					runQueue.get(j).ageProcess();
+			}
+			else
+				processStr+="N,";
+                }
 	}
+        
 	private static void runRRpre(){
 		ArrayList<Process> runQueue = new ArrayList<Process>(NUM_PROCESSES);
 
