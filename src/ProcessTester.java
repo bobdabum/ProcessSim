@@ -24,8 +24,8 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		
-				
+
+
 		printHeaderToFile("SJF non-preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
 			reset(run);
@@ -49,7 +49,7 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		
+
 		printHeaderToFile("HPF preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
 			reset(run);
@@ -57,7 +57,7 @@ public class ProcessTester {
 			printRunToFile(run);
 		}
 		printFinalToFile();
-		
+
 		printHeaderToFile("HPF non-preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
 			reset(run);
@@ -110,7 +110,7 @@ public class ProcessTester {
 		}
 	}
 	private static void runSJFnonpre(){
-                ArrayList<Process> runQueue = new ArrayList<Process>(NUM_PROCESSES);
+		ArrayList<Process> runQueue = new ArrayList<Process>(NUM_PROCESSES);
 
 		//runs for 100 time quanta
 		for(int i =0;i<NUM_QUANTA;i++){
@@ -119,14 +119,14 @@ public class ProcessTester {
 				runQueue.add(pToRun.remove(0));
 
 			//move processes  and any additional actions
-                        int startPoint = (runQueue.size() > 0) ? 1:0;
-                        Collections.sort(runQueue.subList(startPoint, runQueue.size()), Process.compareByRunDuration);
+			int startPoint = (runQueue.size() > 0) ? 1:0;
+			Collections.sort(runQueue.subList(startPoint, runQueue.size()), Process.compareByRunDuration);
 
 			//i.e. preemptive algorithms moving processes around
 
 			//Run queue for one time quanta
 			if(runQueue.size()>0){
-                                //System.out.println(runQueue.get(0).getProcessNumber() + " + " + runQueue.get(0).getRunDuration());
+				//System.out.println(runQueue.get(0).getProcessNumber() + " + " + runQueue.get(0).getRunDuration());
 				//runs first process in queue. removes if process has finished(i.e. method returns false)
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 
@@ -143,7 +143,7 @@ public class ProcessTester {
 		}
 	}
 	private static void runSRTnonpre(){
-            ArrayList<Process> runQueue = new ArrayList<Process>(NUM_PROCESSES);
+		ArrayList<Process> runQueue = new ArrayList<Process>(NUM_PROCESSES);
 
 		//runs for 100 time quanta
 		for(int i =0;i<NUM_QUANTA;i++){
@@ -152,13 +152,13 @@ public class ProcessTester {
 				runQueue.add(pToRun.remove(0));
 
 			//move processes  and any additional actions
-                        Collections.sort(runQueue.subList(0, runQueue.size()), Process.compareTimeRemaining);
+			Collections.sort(runQueue.subList(0, runQueue.size()), Process.compareTimeRemaining);
 
 			//i.e. preemptive algorithms moving processes around
 
 			//Run queue for one time quanta
 			if(runQueue.size()>0){
-                                //System.out.println(runQueue.get(0).getProcessNumber() + " + " + runQueue.get(0).getRunDuration());
+				//System.out.println(runQueue.get(0).getProcessNumber() + " + " + runQueue.get(0).getRunDuration());
 				//runs first process in queue. removes if process has finished(i.e. method returns false)
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 
@@ -172,9 +172,9 @@ public class ProcessTester {
 			}
 			else
 				processStr+="N,";
-                }
+		}
 	}
-        
+
 	private static void runRRpre(){
 		ArrayList<Process> runQueue = new ArrayList<Process>(NUM_PROCESSES);
 
@@ -243,7 +243,7 @@ public class ProcessTester {
 				else
 					System.out.println("Error in HPFnonPre priority level");
 			}
-				
+
 			//move processes  and any additional actions
 			//i.e. preemptive algorithms moving processes around
 
@@ -378,7 +378,7 @@ public class ProcessTester {
 				else
 					System.out.println("Error in HPFnonPre priority level");
 			}
-				
+
 			//move processes  and any additional actions
 			//i.e. preemptive algorithms moving processes around
 
@@ -540,7 +540,7 @@ public class ProcessTester {
 		avgTurnAround = 0;
 		avgWaitTime = 0;
 		avgThroughput = 0;
-		
+
 		try {
 			FileWriter fw = new FileWriter("statistics.txt", true);
 			fw.write("Algorithm: "+algorithmType+System.getProperty("line.separator"));			

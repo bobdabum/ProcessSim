@@ -14,7 +14,7 @@ public class Process implements Comparable<Process>{
 		RUN_DURATION = .1+ 9.9*r.nextDouble();
 		START_TIME = r.nextInt(100);
 		priority = r.nextInt(4);
-		
+
 		age = 0;		
 		timeRunning = 0;
 		timeWaiting = 0;
@@ -25,7 +25,7 @@ public class Process implements Comparable<Process>{
 		START_TIME = sTime;
 		this.priority = priority;
 		processNum = pNum;
-		
+
 		age = 0;
 		timeRunning = 0;
 		timeWaiting = 0;
@@ -40,11 +40,11 @@ public class Process implements Comparable<Process>{
 			//records actual start time for response time calculations
 			if(actualStart<0)
 				actualStart = timeQuanta;
-			
+
 			age = 0;
 			timeRunning++;
 		}
-		
+
 		if (timeRunning >= RUN_DURATION)
 			return false;
 		else 
@@ -66,33 +66,30 @@ public class Process implements Comparable<Process>{
 		priority++;
 		age = 0;
 	}
-	public double getTimeRemaining(){
-		return RUN_DURATION-timeRunning;
-	}
-        
-        public static final Comparator<Process> compareTimeRemaining = new 
-            Comparator<Process>() {
-                @Override
-                public int compare(Process p1, Process p2){
-                    if(p1.getTimeRemaining() < p2.getTimeRemaining())
-                            return -1;
-                    else if(p1.getTimeRemaining() == p2.getTimeRemaining())
-                            return 0;
-                    else return 1;
-                }
-        };
-        
-        public static final Comparator<Process> compareByRunDuration = new 
-            Comparator<Process>() {
-                @Override
-                public int compare(Process p1, Process p2){
-                    if(p1.getRunDuration() < p2.getRunDuration())
-                            return -1;
-                    else if(p1.getRunDuration() == p2.getRunDuration())
-                            return 0;
-                    else return 1;
-                }
-        };
+
+	public static final Comparator<Process> compareTimeRemaining = new 
+			Comparator<Process>() {
+		@Override
+		public int compare(Process p1, Process p2){
+			if(p1.getTimeRemaining() < p2.getTimeRemaining())
+				return -1;
+			else if(p1.getTimeRemaining() == p2.getTimeRemaining())
+				return 0;
+			else return 1;
+		}
+	};
+
+	public static final Comparator<Process> compareByRunDuration = new 
+			Comparator<Process>() {
+		@Override
+		public int compare(Process p1, Process p2){
+			if(p1.getRunDuration() < p2.getRunDuration())
+				return -1;
+			else if(p1.getRunDuration() == p2.getRunDuration())
+				return 0;
+			else return 1;
+		}
+	};
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//Getters and Comparable interface method	
 	public int compareTo(Process p){
@@ -101,6 +98,9 @@ public class Process implements Comparable<Process>{
 		else if(START_TIME==p.getStartTime())
 			return 0;
 		else return 1;
+	}
+	public double getTimeRemaining(){
+		return RUN_DURATION-timeRunning;
 	}
 	public int getPriority() {
 		return priority;
@@ -123,7 +123,7 @@ public class Process implements Comparable<Process>{
 	public double getResponseTime(){
 		return actualStart - START_TIME;
 	}
-        public double getRunDuration(){
-            return RUN_DURATION;
-        }
+	public double getRunDuration(){
+		return RUN_DURATION;
+	}
 }
