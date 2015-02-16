@@ -5,7 +5,7 @@ import java.util.Random;
 public class Process implements Comparable<Process>{
 
 	private final double RUN_DURATION;
-	private final int START_TIME;
+	private final int START_TIME, INITIAL_PRIORITY;
 	private int priority, age, timeRunning, timeWaiting, actualStart, processNum;
 
 	public Process(int seed){
@@ -14,7 +14,8 @@ public class Process implements Comparable<Process>{
 		RUN_DURATION = .1+ 9.9*r.nextDouble();
 		START_TIME = r.nextInt(100);
 		priority = r.nextInt(4);
-
+		INITIAL_PRIORITY = priority;
+		
 		age = 0;		
 		timeRunning = 0;
 		timeWaiting = 0;
@@ -24,6 +25,7 @@ public class Process implements Comparable<Process>{
 		RUN_DURATION = rTime;
 		START_TIME = sTime;
 		this.priority = priority;
+		INITIAL_PRIORITY = priority;
 		processNum = pNum;
 
 		age = 0;
@@ -63,7 +65,7 @@ public class Process implements Comparable<Process>{
 	 * Increases Priority of process.
 	 */
 	public void increasePriority(){
-		priority++;
+		priority--;
 		age = 0;
 	}
 
@@ -104,6 +106,9 @@ public class Process implements Comparable<Process>{
 	}
 	public int getPriority() {
 		return priority;
+	}
+	public int getInitialPriority(){
+		return INITIAL_PRIORITY;
 	}
 	public int getStartTime() {
 		return START_TIME;
