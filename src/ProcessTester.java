@@ -119,23 +119,19 @@ public class ProcessTester {
 			while(pToRun.size()>0 && pToRun.get(0).getStartTime()<=i)
 				runQueue.add(pToRun.remove(0));
 
-			//move processes  and any additional actions\
-                        //if(runQueue.size()>0){System.out.println("Pre-Sort: 0_Number" + runQueue.get(0).getProcessNumber());} 
-                        Collections.sort(runQueue, Process.compareByRunDuration);
+			//move processes  and any additional actions
+                        int startPoint = (runQueue.size() > 0) ? 1:0;
+                        Collections.sort(runQueue.subList(startPoint, runQueue.size()), Process.compareByRunDuration);
 
-                        //if(runQueue.size()>0){System.out.println("Post-Sort: 0_Number " + runQueue.get(0).getProcessNumber());} 
 			//i.e. preemptive algorithms moving processes around
 
 			//Run queue for one time quanta
 			if(runQueue.size()>0){
-                                System.out.println(runQueue.get(0).getProcessNumber() + " + " + runQueue.get(0).getRunDuration());
+                                //System.out.println(runQueue.get(0).getProcessNumber() + " + " + runQueue.get(0).getRunDuration());
 				//runs first process in queue. removes if process has finished(i.e. method returns false)
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 
-				if(runQueue.get(0).run(i))
-					runQueue.add(runQueue.remove(0));
-				else
-					pHaveRun.add(runQueue.remove(0));
+				pHaveRun.add(runQueue.remove(0));
 
 				//ages rest
 				for(int j=1; j<runQueue.size();j++)
