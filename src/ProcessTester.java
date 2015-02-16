@@ -130,7 +130,9 @@ public class ProcessTester {
 				//runs first process in queue. removes if process has finished(i.e. method returns false)
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 
-				pHaveRun.add(runQueue.remove(0));
+				if(runQueue.get(0).run(i));
+				else
+					pHaveRun.add(runQueue.remove(0));
 
 				//ages rest
 				for(int j=1; j<runQueue.size();j++)
@@ -160,7 +162,9 @@ public class ProcessTester {
 				//runs first process in queue. removes if process has finished(i.e. method returns false)
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 
-				pHaveRun.add(runQueue.remove(0));
+				if(runQueue.get(0).run(i));
+				else
+					pHaveRun.add(runQueue.remove(0));
 
 				//ages rest
 				for(int j=1; j<runQueue.size();j++)
