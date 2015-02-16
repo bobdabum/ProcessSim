@@ -62,7 +62,7 @@ public class Process implements Comparable<Process>{
 	 * Increases Priority of process.
 	 */
 	public void increasePriority(){
-		priority++;
+		priority--;
 		age = 0;
 	}
 	public double getTimeRemaining(){
