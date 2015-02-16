@@ -39,7 +39,7 @@ public class ProcessTester {
 		printHeaderToFile("SRT non-preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
 			reset(run);
-			runSRTnonpre();
+			runSRTpre();
 			printRunToFile(run);
 		}
 		printFinalToFile();
@@ -105,14 +105,20 @@ public class ProcessTester {
 		//runs any remaining processes that have started (i.e. response time>=0)
 		while(runQueue.size()>0){
 			if(runQueue.get(0).getResponseTime()>=0){
+				//ages rest
+				for(int j=1; j<runQueue.size();j++)
+					runQueue.get(j).ageProcess();
+				
+				//runs process
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 				if(runQueue.get(0).run(i));
 				else
 					pHaveRun.add(runQueue.remove(0));
+				
+				i++;
 			}
 			else
 				runQueue.remove(0);
-			i++;
 		}
 	}
 	private static void runSJFnonpre(){
@@ -147,8 +153,30 @@ public class ProcessTester {
 			else
 				processStr+="N,";
 		}
+		
+		int i = NUM_QUANTA;
+		for(int j =0; j<runQueue.size();j++)
+			if(runQueue.get(j).getResponseTime()<0){
+				runQueue.remove(j);
+				j--;
+			}
+		while(runQueue.size()>0){
+			int startPoint = (runQueue.size() > 0) ? 1:0;
+			Collections.sort(runQueue.subList(startPoint, runQueue.size()), Process.compareByRunDuration);
+			
+			processStr+=runQueue.get(0).getProcessNumber()+",";
+			if(runQueue.get(0).run(i));
+			else
+				pHaveRun.add(runQueue.remove(0));
+
+			//ages rest
+			for(int j=1; j<runQueue.size();j++)
+				runQueue.get(j).ageProcess();
+			//increment time quanta
+			i++;
+		}
 	}
-	private static void runSRTnonpre(){
+	private static void runSRTpre(){
 		ArrayList<Process> runQueue = new ArrayList<Process>(NUM_PROCESSES);
 
 		//runs for 100 time quanta
@@ -164,7 +192,7 @@ public class ProcessTester {
 
 			//Run queue for one time quanta
 			if(runQueue.size()>0){
-				//System.out.println(runQueue.get(0).getProcessNumber() + " + " + runQueue.get(0).getRunDuration());
+				
 				//runs first process in queue. removes if process has finished(i.e. method returns false)
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 
@@ -178,6 +206,27 @@ public class ProcessTester {
 			}
 			else
 				processStr+="N,";
+		}
+		int i = NUM_QUANTA;
+		for(int j =0; j<runQueue.size();j++)
+			if(runQueue.get(j).getResponseTime()<0){
+				runQueue.remove(j);
+				j--;
+			}
+		while(runQueue.size()>0){
+			Collections.sort(runQueue.subList(0, runQueue.size()), Process.compareTimeRemaining);
+
+			processStr+=runQueue.get(0).getProcessNumber()+",";
+			if(runQueue.get(0).run(i));
+			else
+				pHaveRun.add(runQueue.remove(0));
+
+			//ages rest
+			for(int j=1; j<runQueue.size();j++)
+				runQueue.get(j).ageProcess();
+			
+			//increment time quanta
+			i++;
 		}
 	}
 
@@ -195,6 +244,10 @@ public class ProcessTester {
 
 			//Run queue for one time quanta
 			if(runQueue.size()>0){
+				//ages rest
+				for(int j=1; j<runQueue.size();j++)
+					runQueue.get(j).ageProcess();
+				
 				//runs first process in queue. removes if process has finished(i.e. method returns false)
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 
@@ -202,10 +255,6 @@ public class ProcessTester {
 					runQueue.add(runQueue.remove(0));
 				else
 					pHaveRun.add(runQueue.remove(0));
-
-				//ages rest
-				for(int j=1; j<runQueue.size();j++)
-					runQueue.get(j).ageProcess();
 			}
 			else
 				processStr+="N,";
@@ -215,6 +264,10 @@ public class ProcessTester {
 		//runs any remaining processes that have started (i.e. response time>=0)
 		while(runQueue.size()>0){
 			if(runQueue.get(0).getResponseTime()>=0){
+				//ages rest
+				for(int j=1; j<runQueue.size();j++)
+					runQueue.get(j).ageProcess();
+				
 				processStr+=runQueue.get(0).getProcessNumber()+",";
 				if(runQueue.get(0).run(i))
 					runQueue.add(runQueue.remove(0));
