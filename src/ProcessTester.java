@@ -17,6 +17,7 @@ public class ProcessTester {
 	public static double[] avgTurnAroundHPF, avgWaitTimeHPF, avgResponseTimeHPF, avgThroughputHPF;
 	public static ArrayList<Process> pToRun, pHaveRun;
 	public static ArrayList<ArrayList<Process>> pHaveRunHPF;
+	public static String[] processStrHPF;
 	public static String processStr = "";
 
 	public static void main(String[] args){
@@ -36,7 +37,7 @@ public class ProcessTester {
 		}
 		printFinalToFile();
 
-		printHeaderToFile("SRT non-preemptive");
+		printHeaderToFile("SRT preemptive");
 		for(int run = 0; run< NUM_RUNS; run++){
 			reset(run);
 			runSRTpre();
@@ -310,12 +311,16 @@ public class ProcessTester {
 				}
 			}
 
+			//Run queue for first 100 time quanta
 			boolean haveRun = false;
-			//Run queue for one time quanta
+			int k=-1;
 			for(ArrayList<Process> a: runQueue)
 			{
-				if(a.size()==0)
+				k++;
+				if(a.size()==0){
+					processStrHPF[k]+="N,";
 					continue;
+				}
 				else if(!haveRun){
 					haveRun = true;
 					//ages rest
@@ -323,6 +328,7 @@ public class ProcessTester {
 						a.get(j).ageProcess();
 
 					processStr+=a.get(0).getProcessNumber()+",";
+					processStrHPF[k]+=a.get(0).getProcessNumber()+",";
 					if(a.get(0).run(i))
 						a.add(a.remove(0));
 					else{
@@ -331,6 +337,7 @@ public class ProcessTester {
 					}
 				}
 				else{
+					processStrHPF[k]+="N,";
 					for(Process p:a)
 						p.ageProcess();					
 				}
@@ -350,6 +357,7 @@ public class ProcessTester {
 			}
 			sum+=a.size();
 		}
+		
 		//runs any remaining processes that have started (i.e. response time>=0)
 		while(sum>0){
 			for(int j=1; j<runQueue.size(); j++)
@@ -370,10 +378,14 @@ public class ProcessTester {
 			}
 			boolean haveRun = false;
 			//Run queue for one time quanta
+			int k=-1;
 			for(ArrayList<Process> a: runQueue)
 			{
-				if(a.size()==0)
+				k++;
+				if(a.size()==0){
+					processStrHPF[k]+="N,";
 					continue;
+				}
 				else if(!haveRun){
 					haveRun = true;
 					//ages rest
@@ -381,6 +393,7 @@ public class ProcessTester {
 						a.get(j).ageProcess();
 
 					processStr+=a.get(0).getProcessNumber()+",";
+					processStrHPF[k]+=a.get(0).getProcessNumber()+",";
 					if(a.get(0).run(i)){
 						a.add(a.remove(0));
 					}
@@ -391,6 +404,7 @@ public class ProcessTester {
 					}
 				}
 				else{
+					processStrHPF[k]+="N,";
 					for(Process p:a)
 						p.ageProcess();					
 				}
@@ -429,12 +443,16 @@ public class ProcessTester {
 				}
 			}
 
-			boolean haveRun = false;
 			//Run queue for one time quanta
+			boolean haveRun = false;
+			int k =-1;
 			for(ArrayList<Process> a: runQueue)
 			{
-				if(a.size()==0)
+				k++;
+				if(a.size()==0){
+					processStrHPF[k]+="N,";
 					continue;
+					}
 				else if(!haveRun){
 					haveRun = true;
 					//ages rest
@@ -442,6 +460,7 @@ public class ProcessTester {
 						a.get(j).ageProcess();
 
 					processStr+=a.get(0).getProcessNumber()+",";
+					processStrHPF[k]+=a.get(0).getProcessNumber()+",";
 					if(a.get(0).run(i));
 					else{
 						pHaveRunHPF.get(a.get(0).getInitialPriority()).add(a.get(0));
@@ -449,6 +468,7 @@ public class ProcessTester {
 					}
 				}
 				else{
+					processStrHPF[k]+="N,";
 					for(Process p:a)
 						p.ageProcess();					
 				}
@@ -457,8 +477,9 @@ public class ProcessTester {
 				processStr+="N,";
 		}
 
-		int i = NUM_QUANTA;
 		//runs any remaining processes that have started (i.e. response time>=0)
+		
+		int i = NUM_QUANTA;
 		int sum = 0;
 		for(ArrayList<Process> a:runQueue){
 			for(int j=0; j< a.size(); j++){
@@ -487,11 +508,14 @@ public class ProcessTester {
 				}
 			}
 			boolean haveRun = false;
-			//Run queue for one time quanta
+			int k =-1;
 			for(ArrayList<Process> a: runQueue)
 			{
-				if(a.size()==0)
+				k++;
+				if(a.size()==0){
+					processStrHPF[k]+="N,";
 					continue;
+				}
 				else if(!haveRun){
 					haveRun = true;
 					//ages rest
@@ -499,6 +523,7 @@ public class ProcessTester {
 						a.get(j).ageProcess();
 
 					processStr+=a.get(0).getProcessNumber()+",";
+					processStrHPF[k]+=a.get(0).getProcessNumber()+",";
 					if(a.get(0).run(i));
 					else{
 						pHaveRunHPF.get(a.get(0).getInitialPriority()).add(a.get(0));
@@ -507,6 +532,7 @@ public class ProcessTester {
 					}
 				}
 				else{
+					processStrHPF[k]+="N,";
 					for(Process p:a)
 						p.ageProcess();					
 				}
@@ -558,13 +584,13 @@ public class ProcessTester {
 		//write to file
 		try {
 			FileWriter fw = new FileWriter("statistics.txt", true);
-			fw.write("Run: "+run+System.getProperty("line.separator"));
+			fw.write(System.getProperty("line.separator")+"Run: "+run+System.getProperty("line.separator"));
 			fw.write("Process Time Line: "+processStr+System.getProperty("line.separator"));
 			fw.write("Wait Time: "+df.format(waitTime)+", Response Time: "+df.format(responseTime)+
 					", Turn Around: "+df.format(turnAround)+", Throughput: "+df.format(throughput)+System.getProperty("line.separator"));
 
 
-			System.out.println("Run: "+run);
+			System.out.println("\nRun: "+run);
 			System.out.println("Process Time Line: "+processStr);
 			System.out.println("Wait Time: "+df.format(waitTime)+", Response Time: "+df.format(responseTime)+
 					", Turn Around: "+df.format(turnAround)+", Throughput: "+df.format(throughput));
@@ -600,11 +626,13 @@ public class ProcessTester {
 			try {
 				FileWriter fw = new FileWriter("statistics.txt", true);
 				fw.write("Priority Queue: "+i+System.getProperty("line.separator"));
+				fw.write("Process Time Line: "+processStrHPF[i]+System.getProperty("line.separator"));
 				fw.write("Wait Time: "+df.format(waitTime)+", Response Time: "+df.format(responseTime)+
 						", Turn Around: "+df.format(turnAround)+", Throughput: "+df.format(throughput)+System.getProperty("line.separator"));
 
 
 				System.out.println("Priority Queue: "+i);
+				System.out.println("Process Time Line: "+processStrHPF[i]);
 				System.out.println("Wait Time: "+df.format(waitTime)+", Response Time: "+df.format(responseTime)+
 						", Turn Around: "+df.format(turnAround)+", Throughput: "+df.format(throughput));
 				fw.close();
@@ -660,6 +688,10 @@ public class ProcessTester {
 		Random r = new Random(run+START_SEED);		
 		//resets everything
 		processStr = "";
+		processStrHPF = new String[NUM_PRIORITIES];
+		for(int i = 0; i<NUM_PRIORITIES;i++){
+			processStrHPF[i] = "";
+		}
 		pToRun = new ArrayList<Process>(NUM_PROCESSES);
 		pHaveRun = new ArrayList<Process>(NUM_PROCESSES);
 		pHaveRunHPF = new ArrayList<ArrayList<Process>>(NUM_PRIORITIES);
